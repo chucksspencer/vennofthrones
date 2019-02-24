@@ -1,0 +1,33 @@
+{
+  "name": "venn-of-thrones",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.118",
+    "@types/moviedb": "^0.0.29",
+    "bootstrap": "^4.1.3",
+    "bootstrap-css": "^4.0.0-alpha.5",
+    "d3": "^5.7.0",
+    "lodash": "^4.17.11",
+    "moviedb": "^0.2.10",
+    "moviedb-promise": "^1.3.1",
+    "uiv": "^0.28.0",
+    "venn.js": "^0.2.20",
+    "vue": "^2.5.17",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^7.0.0",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.1.1",
+    "@vue/cli-plugin-typescript": "^3.1.1",
+    "@vue/cli-service": "^3.1.1",
+    "typescript": "^3.0.0",
+    "vue-template-compiler": "^2.5.17"
+  }
+}

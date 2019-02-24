@@ -1,0 +1,62 @@
+html {
+  height: 100%;
+  background: black;
+}
+
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 0px;
+}
+
+.vennofthronesbody {
+  background: black;
+  color: antiquewhite;
+  text-align: center;
+  height: 100%;
+}
+
+@font-face {
+  font-family: 'Game Of Thrones';
+  src: url('./assets/fonts/game_of_thrones.ttf') format('truetype');
+}
+
+.title {
+  font-family: 'Game Of Thrones';
+  font-weight: 100;
+}
+
+.title > small {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+}
+
+
+.vert-space {
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
+
+.cast-listing {
+  text-align: left;
+}
+
+.vcenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popover .arrow {
+  margin: 0;
+}
+
+body > div.popover.fade.left.in {
+  opacity: 1;
+}
+
+body > div.popover.fade.right.in {
+  opacity: 1;
+}

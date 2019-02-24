@@ -1,0 +1,212 @@
+<div id="#app" class="vennofthronesbody">
+  <div class="container" style="max-width: 700px;">
+    <div class="row vert-space">
+      <div class="col">
+        <div class="page-header">
+          <img src="./assets/vennofthroneslogo.png" height="60px"/>
+          <h1 class="title">Venn of Thrones
+            <br>
+            <small>Search for any movie or TV show to see how much of the cast is also in Game of Thrones</small>
+          </h1>
+        </div>
+      </div>
+    </div>
+    <div class="row vert-space" id="mediaSelect">
+      <div class="col-sm">
+        <section>
+          <btn-group>
+            <btn input-type="radio" input-value="movie" v-model="mediaType">Movies</btn>
+            <btn input-type="radio" input-value="tv" v-model="mediaType">TV Shows</btn>
+          </btn-group>
+        </section>
+      </div>
+    </div>
+    <div class="row vert-space" v-if="mediaType == 'tv'" id="tvSearchField">
+      <div class="col-sm">
+        <section>
+          <input
+            id="tvinput"
+            class="form-control"
+            type="text"
+            placeholder="Type to search for a TV Show..."
+          >
+          <typeahead
+            v-model="tvSearchModel"
+            target="#tvinput"
+            force-select
+            async-src="https://api.themoviedb.org/3/search/tv?api_key=552cf22a781f8cf02259a244af3609e4&language=en-US&page=1&include_adult=false&query="
+            async-key="results"
+            item-key="name"
+          >
+            <template slot="item" slot-scope="props">
+              <li v-for="(item) in props.items" :key="item.id">
+                <a role="button" @click="props.select(item)">
+                  <img
+                    v-if="item.poster_path"
+                    :src="'http://image.tmdb.org/t/p/w45/' + item.poster_path"
+                  >
+                  &nbsp;
+                  <span v-html="props.highlight(item)"></span>
+                </a>
+              </li>
+            </template>
+          </typeahead>
+        </section>
+      </div>
+    </div>
+    <div class="row vert-space" v-if="mediaType == 'tv'" id="tvSearchButton">
+      <div class="col">
+        <btn
+          class="btn btn-secondary"
+          type="button"
+          :disabled="!tvSearchModel"
+          @click="executeSearch(mediaType, tvSearchModel.id)"
+        >Search</btn>
+      </div>
+    </div>
+    <div class="row vert-space" v-if="mediaType == 'movie'" id="movieSearchField">
+      <div class="col-sm">
+        <section>
+          <input
+            id="input"
+            class="form-control"
+            type="text"
+            placeholder="Type to search for a movie..."
+          >
+          <typeahead
+            v-model="movieSearchModel"
+            target="#input"
+            force-select
+            async-src="https://api.themoviedb.org/3/search/movie?api_key=552cf22a781f8cf02259a244af3609e4&language=en-US&page=1&include_adult=false&query="
+            async-key="results"
+            item-key="title"
+          >
+            <template slot="item" slot-scope="props">
+              <li v-for="(item) in props.items" :key="item.id">
+                <a role="button" @click="props.select(item)">
+                  <img
+                    v-if="item.poster_path"
+                    :src="'http://image.tmdb.org/t/p/w45/' + item.poster_path"
+                  >
+                  &nbsp;
+                  <span v-html="props.highlight(item)"></span>
+                  <span>({{(new Date(item.release_date)).getFullYear()}})</span>
+                </a>
+              </li>
+            </template>
+          </typeahead>
+        </section>
+      </div>
+    </div>
+    <div class="row vert-space" v-if="mediaType == 'movie'" id="movieSearchButton">
+      <div class="col">
+        <btn
+          class="btn btn-secondary"
+          type="button"
+          :disabled="!movieSearchModel"
+          @click="executeSearch(mediaType, movieSearchModel.id)"
+        >Search</btn>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4 offset-sm-4">
+        <progress-bar v-if="loading" v-model="loadingProgress"/>
+      </div>
+    </div>
+    <div class="row vert-space" v-if="searchComplete">
+      <div class="col-sm">
+        <h2>Results</h2>
+      </div>
+    </div>
+    <div class="row vert-space" v-if="searchComplete">
+      <div class="col-5">
+        <h2>Game of Thrones</h2>
+        <img :src="'http://image.tmdb.org/t/p/w92/gwPSoYUHAKmdyVywgLpKKA4BjRr.jpg'">
+      </div>
+      <div class="col-2 vcenter">
+        <h2>vs.</h2>
+      </div>
+      <div class="col-5">
+        <h2>{{ rightDetails.title }}</h2>
+        <img :src="'http://image.tmdb.org/t/p/w92/' + this.rightDetails.poster_path">
+      </div>
+    </div>
+    <div class="row vert-space">
+      <div class="col hidden-xs">
+        <div id="venn"></div>
+      </div>
+    </div>
+    <div class="row vert-space" v-if="searchComplete" id="ListsDesktop">
+      <div class="col" id="GotListDesktop">
+        <div class="row">
+          <div class="col">
+            <h5>Actors in {{leftDetails.title}}: {{ leftActors.length.toString() }}</h5>
+          </div>
+        </div>
+        <div class="row" v-for="actorInGot in leftActors" :key="actorInGot.id">
+          <div class="col">
+            <div class="cast-listing">
+              <popover trigger="hover-focus" placement="right">
+                <span>{{ actorInGot.name }}</span>
+                <template slot="popover">
+                  <img
+                    v-if="actorInGot.profile_path"
+                    :src="'http://image.tmdb.org/t/p/w45/' + actorInGot.profile_path"
+                  >
+                  <div>{{actorInGot.character}}</div>
+                </template>
+              </popover>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col" id="BothListDesktop">
+        <div class="row">
+          <div class="col">
+            <h5>Actors in Both: {{ actorsInBoth.length.toString() }}</h5>
+          </div>
+        </div>
+        <div class="row" v-for="actorInBoth in actorsInBoth" :key="actorInBoth.id">
+          <div class="col">
+            <div class="cast-listing">
+              <popover trigger="hover-focus" placement="right">
+                <span>{{ actorInBoth.name }}</span>
+                <template slot="popover">
+                  <img
+                    v-if="actorInBoth.profile_path"
+                    :src="'http://image.tmdb.org/t/p/w45/' + actorInBoth.profile_path"
+                  >
+                  <div>{{actorInBoth.character}}</div>
+                  <div>{{actorInBoth.leftCharacter}}</div>
+                </template>
+              </popover>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col" id="SearchListDesktop">
+        <div class="row">
+          <div class="col">
+            <h5>Actors in {{ rightDetails.title }}: {{ rightActors.length.toString() }}</h5>
+          </div>
+        </div>
+        <div class="row" v-for="rightActor in rightActors" :key="rightActor.id">
+          <div class="col">
+            <div class="cast-listing">
+              <popover trigger="hover-focus" placement="left">
+                <span>{{ rightActor.name }}</span>
+                <template slot="popover">
+                  <img
+                    v-if="rightActor.profile_path"
+                    :src="'http://image.tmdb.org/t/p/w45/' + rightActor.profile_path"
+                  >
+                  <div>{{rightActor.character}}</div>
+                </template>
+              </popover>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
